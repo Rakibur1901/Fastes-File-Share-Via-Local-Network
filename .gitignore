@@ -1,0 +1,19 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# System / IDE files
+.DS_Store
+.vscode/
+.idea/
+
+# App temporary build outputs
+dist/
+build/
+*.spec
