@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Transfer Controller</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root { --bg: #0f172a; --card-bg: #1e293b; --accent: #2563eb; --accent-hover: #1d4ed8; --success: #16a34a; --danger: #dc2626; --text: #f8fafc; --text-muted: #94a3b8; --border: #334155; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; min-height: 100vh; }
+        .container { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 460px; padding: 24px; text-align: center; }
+        
+        .view { display: none; }
+        .view.active { display: block; }
+
+        .title { font-size: 1.4rem; font-weight: bold; margin-bottom: 15px; }
+        .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; margin-bottom: 10px; font-size: 0.95rem; transition: all 0.2s; color: white; }
+        .btn-primary { background: var(--accent); }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-success { background: var(--success); }
+        .btn-secondary { background: #334155; }
+        .btn-danger { background: var(--danger); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .drop-zone { border: 2px dashed var(--accent); border-radius: 12px; padding: 20px 10px; cursor: pointer; margin-bottom: 12px; background: rgba(37, 99, 235, 0.05); transition: background 0.2s, border-color 0.2s; }
+        .drop-zone.dragover { background: rgba(37, 99, 235, 0.2); border-color: #60a5fa; }
+        .drop-icon { font-size: 2rem; margin-bottom: 6px; }
+
+        .qr-box { background: white; padding: 10px; border-radius: 12px; display: inline-block; margin: 10px 0; }
+        .info-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 0.85rem; text-align: left; margin: 10px 0; word-break: break-all; }
+        
+        .file-list { max-height: 200px; overflow-y: auto; text-align: left; margin: 10px 0; font-size: 0.85rem; }
+        .file-item { padding: 8px 10px; background: rgba(255,255,255,0.05); border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .action-btn { padding: 5px 10px; border-radius: 4px; border: none; font-size: 0.75rem; font-weight: bold; color: white; cursor: pointer; }
+        .btn-accept { background: var(--success); }
+        .btn-reject { background: var(--danger); }
+
+        .btn-group { display: flex; gap: 8px; }
+        .btn-group .btn { flex: 1; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- 1. HOME PAGE VIEW -->
+    <div id="viewHome" class="view active">
+        <div class="title">Data Transfer</div>
+        <p style="color:var(--text-muted); margin-bottom: 15px;">Scan to connect mobile, then choose mode:</p>
+        
+        <div id="homeQr" class="qr-box"></div>
+        <div class="info-box" style="text-align: center; margin-bottom: 15px;">
+            <strong id="homeUrlText">Loading...</strong>
+        </div>
+
+        <button class="btn btn-primary" onclick="setMode('SEND')">📤 Send to Mobile / Device</button>
+        <button class="btn btn-primary" onclick="setMode('RECEIVE')">📥 Receive from Mobile / Device</button>
+        <button class="btn btn-danger" style="margin-top: 15px;" onclick="stopApp()">Exit Application</button>
+    </div>
+
+    <!-- 2. SEND MODE VIEW -->
+    <div id="viewSend" class="view">
+        <div class="title">Send Mode (PC ➔ Mobile)</div>
+        
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('webFileInput').click()">
+            <div class="drop-icon">📁</div>
+            <div style="font-size: 0.9rem; font-weight: bold;">Drag & Drop Files / Folders Here</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">or click to browse</div>
+            <input type="file" id="webFileInput" multiple style="display:none;" onchange="handleDroppedFiles(this.files)">
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-secondary" onclick="selectSendFiles('files')">📄 Select Files</button>
+            <button class="btn btn-secondary" onclick="selectSendFiles('folder')">📂 Select Folder</button>
+        </div>
+        
+        <div id="sendFileList" class="file-list"></div>
+
+        <button class="btn btn-success" id="btnStartSend" onclick="startSending()" disabled>🚀 Start / Send Transfer</button>
+
+        <div class="info-box">
+            <div>Connection Link:</div>
+            <strong id="sendUrlText">Loading...</strong>
+        </div>
+        
+        <button class="btn btn-danger" onclick="setMode('HOME')">🛑 Stop / Back to Home</button>
+    </div>
+
+    <!-- 3. RECEIVE MODE VIEW -->
+    <div id="viewReceive" class="view">
+        <div class="title">Receive Mode (Mobile ➔ PC)</div>
+        <div class="info-box">
+            <div>Save Destination:</div>
+            <strong id="destPath">Desktop/ReceivedFiles</strong>
+        </div>
+        <button class="btn btn-secondary" onclick="setDestination()">📂 Set Destination Folder</button>
+
+        <div style="margin-top:15px; font-size:0.9rem; font-weight:bold; text-align:left;">
+            Incoming Files Pending Approval:
+        </div>
+        <div id="incomingList" class="file-list"></div>
+
+        <div class="info-box">
+            <div>Connection Link:</div>
+            <strong id="receiveUrlText">Loading...</strong>
+        </div>
+
+        <button class="btn btn-danger" onclick="setMode('HOME')">🛑 Stop / Back to Home</button>
+    </div>
+
+</div>
+
+<script>
+    let homeQrObj = null;
+
+    const dropZone = document.getElementById('dropZone');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+    });
+
+    dropZone.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleDroppedFiles(files);
+    }
+
+    async function handleDroppedFiles(files) {
+        if (!files || files.length === 0) return;
+        const formData = new FormData();
+        for (let file of files) {
+            formData.append('files', file);
+        }
+        await fetch('/api/add-dropped-files', {
+            method: 'POST',
+            body: formData
+        });
+        updateUI();
+    }
+
+    async function setMode(mode) {
+        await fetch('/api/set-mode', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ mode: mode })
+        });
+        updateUI();
+    }
+
+    async function respondIncoming(id, action) {
+        await fetch('/api/respond-incoming', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ id: id, action: action })
+        });
+        updateUI();
+    }
+
+    async function updateUI() {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+
+        if (data.mode === 'HOME') {
+            document.getElementById('viewHome').classList.add('active');
+            document.getElementById('homeUrlText').innerText = data.server_url;
+            
+            const qrContainer = document.getElementById("homeQr");
+            qrContainer.innerHTML = '';
+            homeQrObj = new QRCode(qrContainer, { text: data.server_url, width: 130, height: 130 });
+
+        } else if (data.mode === 'SEND') {
+            document.getElementById('viewSend').classList.add('active');
+            document.getElementById('sendUrlText').innerText = data.server_url;
+
+            const fileList = document.getElementById('sendFileList');
+            const startBtn = document.getElementById('btnStartSend');
+
+            if (data.selected_files && data.selected_files.length > 0) {
+                fileList.innerHTML = data.selected_files.map(f => `
+                    <div class="file-item">
+                        <span>${f.name}</span>
+                        <span>${(f.size / 1024 / 1024).toFixed(2)} MB</span>
+                    </div>
+                `).join('');
+                startBtn.disabled = false;
+            } else {
+                fileList.innerHTML = '<div style="color:var(--text-muted); text-align:center;">No files selected yet</div>';
+                startBtn.disabled = true;
+            }
+
+        } else if (data.mode === 'RECEIVE') {
+            document.getElementById('viewReceive').classList.add('active');
+            document.getElementById('destPath').innerText = data.destination;
+            document.getElementById('receiveUrlText').innerText = data.server_url;
+
+            const incList = document.getElementById('incomingList');
+            if (data.incoming_requests && data.incoming_requests.length > 0) {
+                incList.innerHTML = data.incoming_requests.map(i => `
+                    <div class="file-item">
+                        <div style="overflow:hidden; text-overflow:ellipsis; max-width:200px;">
+                            <div><strong>${i.name}</strong></div>
+                            <div style="font-size:0.75rem; color:var(--text-muted);">${(i.size / 1024 / 1024).toFixed(2)} MB (${i.ext})</div>
+                        </div>
+                        <div style="display:flex; gap:4px;">
+                            <button class="action-btn btn-accept" onclick="respondIncoming(${i.id}, 'accept')">Accept</button>
+                            <button class="action-btn btn-reject" onclick="respondIncoming(${i.id}, 'reject')">Reject</button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                incList.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:10px;">No incoming files waiting</div>';
+            }
+        }
+    }
+
+    async function selectSendFiles(type) {
+        await fetch('/api/select-send-files', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ type: type })
+        });
+        updateUI();
+    }
+
+    async function startSending() {
+        alert('Files are live and ready for mobile devices to download!');
+    }
+
+    async function setDestination() {
+        await fetch('/api/set-destination', { method: 'POST' });
+        updateUI();
+    }
+
+    async function stopApp() {
+        await fetch('/api/stop', { method: 'POST' });
+    }
+
+    updateUI();
+    setInterval(updateUI, 2000);
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receive Files from PC</title>
+    <style>
+        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 20px; text-align: center; }
+        .card { background: #1e293b; border-radius: 12px; padding: 20px; max-width: 400px; margin: 0 auto; }
+        .file-item { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .dl-btn { background: #16a34a; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h3>📥 Available Files from PC</h3>
+        <p style="color:#94a3b8; margin-bottom: 15px;">Tap download to save files.</p>
+        <div id="fileContainer">Loading...</div>
+    </div>
+
+    <script>
+        async function loadFiles() {
+            const res = await fetch('/api/send-files-list');
+            const data = await res.json();
+            const container = document.getElementById('fileContainer');
+            
+            if(!data.files || data.files.length === 0) {
+                container.innerHTML = '<p style="color:#94a3b8">No files shared by PC yet.</p>';
+                return;
+            }
+            
+            container.innerHTML = data.files.map((f, idx) => `
+                <div class="file-item">
+                    <span>${f.name}</span>
+                    <a class="dl-btn" href="/download/${idx}" download>Download</a>
+                </div>
+            `).join('');
+        }
+        loadFiles();
+    </script>
+</body>
+</html>

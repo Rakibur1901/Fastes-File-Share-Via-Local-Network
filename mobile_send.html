@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Files to PC</title>
+    <style>
+        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 20px; text-align: center; }
+        .card { background: #1e293b; border-radius: 12px; padding: 20px; max-width: 400px; margin: 0 auto; }
+        .drop-zone { border: 2px dashed #2563eb; padding: 20px; border-radius: 8px; margin-bottom: 15px; cursor: pointer; }
+        .btn { background: #2563eb; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h3>📤 Send Files to PC</h3>
+        <p style="color:#94a3b8; margin: 10px 0;">PC is ready to receive files.</p>
+        <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+            Tap to Pick Files
+            <input type="file" id="fileInput" multiple style="display:none;" onchange="updateList(event)">
+        </div>
+        <div id="fileNames" style="margin-bottom: 15px; text-align: left; font-size: 0.85rem;"></div>
+        <button class="btn" id="sendBtn" disabled onclick="upload()">Start Upload</button>
+    </div>
+
+    <script>
+        let selectedFiles = [];
+        function updateList(e) {
+            selectedFiles = Array.from(e.target.files);
+            document.getElementById('sendBtn').disabled = selectedFiles.length === 0;
+            document.getElementById('fileNames').innerHTML = selectedFiles.map(f => `<div>• ${f.name}</div>`).join('');
+        }
+        async function upload() {
+            const formData = new FormData();
+            selectedFiles.forEach(f => formData.append('files', f));
+            await fetch('/api/upload', { method: 'POST', body: formData });
+            alert('Transfer Completed!');
+            location.reload();
+        }
+    </script>
+</body>
+</html>

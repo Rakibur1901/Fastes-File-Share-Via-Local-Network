@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waiting for PC...</title>
+    <style>
+        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 20px; text-align: center; }
+        .card { background: #1e293b; border-radius: 12px; padding: 30px; max-width: 400px; margin: 40px auto; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h3>⌛ Waiting for PC</h3>
+        <p style="color:#94a3b8; margin-top: 10px;">Please select <strong>Send</strong> or <strong>Receive</strong> on the computer screen to proceed.</p>
+    </div>
+    <script>
+        setInterval(async () => {
+            const res = await fetch('/api/status');
+            const data = await res.json();
+            if(data.mode !== 'HOME') location.reload();
+        }, 2000);
+    </script>
+</body>
+</html>
