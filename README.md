@@ -1,19 +1,4 @@
-```markdown
 # Fast Share 🚀
-
-<p align="center">
-  <img src="app_icon.png" width="128" height="128" alt="Fast Share Icon">
-</p>
-
-<p align="center">
-  <strong>Fast, secure, and seamless cross-platform file sharing over your local Wi-Fi network.</strong>
-</p>
-
-<p align="center">
-  <a href="License"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License"></a>
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.8+-green.svg" alt="Python Version"></a>
-  <a href="build.bat"><img src="https://img.shields.io/badge/Platform-Windows-0078D6.svg" alt="Platform"></a>
-</p>
 
 ---
 
@@ -36,9 +21,7 @@
 
 ## 📁 Repository Structure
 
-
 ```
-
 ├── .github/workflows/   # CI/CD workflows (Pylint analysis)
 ├── .gitignore           # Python & IDE exclusion rules
 ├── License              # MIT Open Source License
@@ -68,11 +51,12 @@
 ### Installation
 
 1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/YOUR_USERNAME/Fast-Share.git](https://github.com/YOUR_USERNAME/Fast-Share.git)
-   cd Fast-Share
+```bash
+git clone https://github.com/YOUR_USERNAME/Fast-Share.git
+cd Fast-Share
 
 ```
+
 
 2. **Install required dependencies:**
 ```bash
