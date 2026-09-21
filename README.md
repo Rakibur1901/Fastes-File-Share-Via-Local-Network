@@ -127,12 +127,10 @@ Preview Images:
 
 <!-- Second Row (3 Images) -->
 <div>
-  <img src="https://github.com/user-attachments/assets/e7351ee4-9a98-4f8c-859b-46858ac4575d" width="200" />
-  <img src="https://github.com/user-attachments/assets/c2cc7791-0b3e-4e27-b2a9-905c57d6bec3" width="200" />
-  <img src="https://github.com/user-attachments/assets/8ae23b04-9194-4100-9b20-c0efe7ea96d0" width="200" />
-</div>
-
-
+  <img src="https://github.com/user-attachments/assets/0d577967-2842-4582-a282-e0f7322867bc" width="200" />
+   <img src="https://github.com/user-attachments/assets/8a1e6a3f-b4f9-4e5f-9bd4-3cd8d71c49c1" width="200" />
+  <img src="https://github.com/user-attachments/assets/1a16703c-c9dd-4417-b9f7-83a60dd28fb7" width="200" />
+ </div>
 
 
 
