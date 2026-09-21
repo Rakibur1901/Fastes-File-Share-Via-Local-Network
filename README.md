@@ -104,7 +104,7 @@ build.bat
 
 ## 📜 License
 
-This project is licensed under the **MIT License**. See the [License](https://www.google.com/search?q=License&utm_source=gemini) file for details.
+This project is licensed under the **MIT License**. See the [License](License) file for details.
 
 ---
 
