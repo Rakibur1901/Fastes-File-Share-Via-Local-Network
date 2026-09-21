@@ -17,8 +17,8 @@ def get_base_path():
     return os.path.dirname(os.path.abspath(__file__))
 
 # Temp folders for holding files before approval
-TEMP_SEND_DIR = os.path.join(tempfile.gettempdir(), "DataTransferSendCache")
-TEMP_INCOMING_DIR = os.path.join(tempfile.gettempdir(), "DataTransferIncomingCache")
+TEMP_SEND_DIR = os.path.join(tempfile.gettempdir(), "FastShareSendCache")
+TEMP_INCOMING_DIR = os.path.join(tempfile.gettempdir(), "FastShareIncomingCache")
 os.makedirs(TEMP_SEND_DIR, exist_ok=True)
 os.makedirs(TEMP_INCOMING_DIR, exist_ok=True)
 
@@ -51,7 +51,7 @@ HTML_MOBILE_SEND = """
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Send Files to PC</title>
+    <title>Fast Share - Send Files</title>
     <style>
         body { background: #0f172a; color: #f8fafc; font-family: -apple-system, sans-serif; padding: 20px; text-align: center; }
         .card { background: #1e293b; border-radius: 12px; padding: 20px; max-width: 400px; margin: 20px auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
@@ -65,7 +65,7 @@ HTML_MOBILE_SEND = """
 </head>
 <body>
     <div class="card">
-        <h3 style="margin-bottom:10px;">📤 Send Files to PC</h3>
+        <h3 style="margin-bottom:10px;">📤 Fast Share to PC</h3>
         <p style="color:#94a3b8; margin-bottom:15px; font-size:0.85rem;">Select files to send for PC verification.</p>
         <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
             <div style="font-size: 2.5rem;">📁</div>
@@ -133,7 +133,7 @@ HTML_MOBILE_RECEIVE = """
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Receive Files from PC</title>
+    <title>Fast Share - Receive Files</title>
     <style>
         body { background: #0f172a; color: #f8fafc; font-family: -apple-system, sans-serif; padding: 20px; text-align: center; }
         .card { background: #1e293b; border-radius: 12px; padding: 20px; max-width: 400px; margin: 20px auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
@@ -194,7 +194,7 @@ HTML_MOBILE_WAIT = """
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waiting for PC</title>
+    <title>Fast Share - Waiting</title>
     <style>
         body { background: #0f172a; color: #f8fafc; font-family: -apple-system, sans-serif; padding: 20px; text-align: center; }
         .card { background: #1e293b; border-radius: 12px; padding: 30px 20px; max-width: 400px; margin: 40px auto; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
@@ -204,7 +204,7 @@ HTML_MOBILE_WAIT = """
 </head>
 <body>
     <div class="card">
-        <h3>⏳ Connected to PC</h3>
+        <h3>⏳ Connected via Fast Share</h3>
         <div class="spinner"></div>
         <p style="color:#94a3b8; margin-top: 15px; font-size:0.9rem;">Waiting for host PC to select a mode...</p>
     </div>
@@ -444,5 +444,5 @@ def start_flask():
 
 if __name__ == '__main__':
     threading.Thread(target=start_flask, daemon=True).start()
-    webview.create_window("Data Transfer Controller", "http://127.0.0.1:5000", width=500, height=720, resizable=False)
+    webview.create_window("Fast Share", "http://127.0.0.1:5000", width=500, height=720, resizable=False)
     webview.start()
