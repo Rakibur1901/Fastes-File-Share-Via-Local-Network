@@ -1,77 +1,41 @@
-# ⚡ Local File Flow
+# Fast Share 🚀
 
-> Fast, secure, and seamless cross-device file sharing over your local Wi-Fi network.
+**Fast Share** is a lightweight, cross-platform local file transfer application built with Python, Flask, and PyWebView. It allows fast, secure, and seamless file sharing between your PC and mobile devices over your local Wi-Fi network—no mobile app installation required!
 
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
-[![Framework](https://img.shields.io/badge/framework-Flask%20%7C%20PyWebView-green.svg)](https://flask.palletsprojects.com/)
-[![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
-
-**Local File Flow** is a lightweight desktop controller built with Python, Flask, and PyWebView. It allows you to quickly send and receive files between your PC and mobile devices without relying on third-party cloud services or internet connections.
+**Developed by:** Md Rakibur Rahman Rafi
 
 ---
 
-## 🔥 Key Features
+## 🔑 Key Features
 
-- **📱 QR Code Auto-Routing**: Scan a single QR code on mobile to connect instantly. Switching modes on your PC automatically routes mobile clients to the `/send` or `/receive` interface.
-- **🛡️ Staging & Verification Queue**: Incoming files from mobile devices land in a temporary staging area first. Review filenames, extensions, and file sizes before accepting or rejecting them.
-- **🔄 Auto-Reset on Stop**: Returning to the PC home view automatically redirects mobile devices back to the `/connect` waiting screen.
-- **📁 Folder & Batch Selection**: Share individual files or entire directory trees directly from your desktop.
+* **Two-Way Transfer Modes:**
+  * **Send Mode (PC ➔ Mobile):** Share single files or entire folders from your computer. Mobile users simply scan the QR code to view and download files directly in their web browser.
+  * **Receive Mode (Mobile ➔ PC):** Send files directly from any phone or tablet straight to your PC.
+* **Host Verification & Safety:** Incoming files from mobile devices require approval on the PC—allowing you to review file names and sizes before accepting or rejecting them.
+* **Drag-and-Drop Support:** Drag files or folders directly into the PC app window to queue them instantly for sharing.
+* **Custom Save Folder:** Easily select or change the destination directory on your PC for received transfers.
+* **Zero Mobile Setup:** Mobile devices only need a web browser and a camera (to scan the QR code) connected to the same Wi-Fi network.
 
 ---
 
-## 🛠️ Installation & Prerequisites
+## 🛠️ How It Works
+
+1. **Launch Fast Share:** Run `FastShare.exe` on your PC.
+2. **Connect Mobile Device:** Scan the generated **QR Code** using your phone's camera to open the connection link.
+3. **Choose Mode:**
+   * **To Send Files to Mobile:** Click **Send to Mobile / Device**, select or drag & drop files/folders, and tap download on your phone.
+   * **To Receive Files from Mobile:** Click **Receive from Mobile / Device**, upload files from your phone, and approve or reject incoming requests on your PC.
+
+---
+
+## 💻 Building from Source
 
 ### Prerequisites
-- Python **3.8** or higher
-- All devices must be connected to the **same local Wi-Fi network**.
+* Python 3.8+
+* `pip install flask pywebview qrcode`
+* `pip install pyinstaller`
 
-### Required Packages
-Install dependencies via `pip`:
-
-```bash
-pip install flask pywebview werkzeug
-```
-
----
-
-## 🚀 Getting Started
-
-1. **Clone the repository**:
-   ```bash
-   git clone [https://github.com/YOUR_USERNAME/lan-file-flow.git](https://github.com/YOUR_USERNAME/lan-file-flow.git)
-   cd lan-file-flow
-   ```
-
-2. **Run the application**:
-   ```bash
-   python app.py
-   ```
-
-3. **Connect your mobile device**:
-   * A desktop window will display a generated QR code.
-   * Scan the QR code using your phone camera or mobile browser.
-   * Toggle between **Send** and **Receive** modes on your PC to start transferring.
-
----
-
-## 📂 Project Structure
-
-```text
-lan-file-flow/
-├── app.py           # Flask backend & PyWebView GUI manager
-├── index.html       # PC Controller frontend user interface
-├── README.md        # Project documentation
-└── LICENSE          # MIT License
-```
-
----
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/YOUR_USERNAME/lan-file-flow/issues).
-
----
-
-## 📄 License
-
-Distributed under the **MIT License**. See `LICENSE` for more information.
+### Build Executable
+Run the included build script:
+```cmd
+build.bat
